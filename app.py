@@ -1,24 +1,19 @@
 import streamlit as st
 import requests
-import json
 import time
 from tempfile import NamedTemporaryFile
-import os
 
 API_KEY = str(st.secrets["SIEVE_API_KEY"])
 
-st.title("wav2lip")
+st.title("Wav2Lip")
 st.markdown('Built by [Gaurang Bharti](https://twitter.com/gaurang_bharti) powered by [Sieve](https://www.sievedata.com)')
 
-def send_to_transfersh(file, clipboard=True):
-    """
-    send file to transfersh, retrieve download link, and copy it to clipboard
-    :param file: absolute path to file
-    :param copy_to_clipboard: boolean value specifing if the download_link should be copied to clipboard
-    :return: download_link
-    """
-    file_name = os.path.basename(file)
+with st.expander("Expand for more info"):
+    st.write("To use, simply upload a video with a face and an audio file you would like to lip-sync with the video.")
+    st.write("For best results, use a video with a single face and an audio of similar length as the video.")
 
+
+def send_to_transfersh(file, clipboard=True):
     url = 'https://transfer.sh/'
     file = {'{}'.format(file): open(file, 'rb')}
     response = requests.post(url, files=file)
@@ -49,6 +44,7 @@ def check_status(url, interval, job_id):
                     finished = True
                     return finished
                 if job['status'] == 'error':
+                    st.error("An error occured, please try again. If the error persists, please inform the developers.")
                     return job['error']
 
 def fetch_video(job_id):
@@ -92,9 +88,9 @@ def send_data(video_link, audio_link):
 
 #Streamlit App
 
-video_in = st.file_uploader("Video Upload")
+video_in = st.file_uploader("Video Upload (.mp4 only)", type='.mp4')
 
-audio_in = st.file_uploader("Audio Upload")
+audio_in = st.file_uploader("Audio Upload (.wav only)", type='.wav')
 
 button1 = st.button("Wav2Lip")
 
