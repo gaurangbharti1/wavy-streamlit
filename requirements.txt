@@ -2,5 +2,5 @@ requests
 transfersh-client
 pyperclip
 wget
-gtk
+PyGTK
 PyQt4
