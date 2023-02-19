@@ -3,12 +3,28 @@ import requests
 import json
 import time
 from tempfile import NamedTemporaryFile
-from transfersh_client.app import send_to_transfersh
+import os
 
 API_KEY = str(st.secrets["SIEVE_API_KEY"])
 
 st.title("wav2lip")
 st.markdown('Built by [Gaurang Bharti](https://twitter.com/gaurang_bharti) powered by [Sieve](https://www.sievedata.com)')
+
+def send_to_transfersh(file, clipboard=True):
+    """
+    send file to transfersh, retrieve download link, and copy it to clipboard
+    :param file: absolute path to file
+    :param copy_to_clipboard: boolean value specifing if the download_link should be copied to clipboard
+    :return: download_link
+    """
+    file_name = os.path.basename(file)
+
+    url = 'https://transfer.sh/'
+    file = {'{}'.format(file): open(file, 'rb')}
+    response = requests.post(url, files=file)
+    download_link = response.content.decode('utf-8')
+
+    return download_link
 
 def upload_local(path):
     link = (send_to_transfersh(path))
