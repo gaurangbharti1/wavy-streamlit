@@ -8,10 +8,7 @@ API_KEY = str(st.secrets["SIEVE_API_KEY"])
 st.title("Wav2Lip")
 st.markdown('Built by [Gaurang Bharti](https://twitter.com/gaurang_bharti) powered by [Sieve](https://www.sievedata.com)')
 
-with st.expander("Expand for more info"):
-    st.write("To use, simply upload a video with a face and an audio file you would like to lip-sync with the video.")
-    st.write("For best results, use a video with a single face and an audio of similar length as the video.")
-
+st.write("To use, simply upload a video with a face and an audio file you would like to lip-sync with the video. For best results, use a video with a single face and an audio of similar length as the video.")
 
 def send_to_transfersh(file, clipboard=True):
     url = 'https://transfer.sh/'
@@ -35,16 +32,16 @@ def check_status(url, interval, job_id):
         data = response.json()['data']
         for job in data:
             if job['id'] == job_id:
-                print(job['status'])
                 if job['status'] == 'processing':
-                    print("processing")
+                   
                     time.sleep(interval)
                 if job['status'] == 'finished':
-                    print("finished")
+                    
                     finished = True
                     return finished
                 if job['status'] == 'error':
                     st.error("An error occured, please try again. If the error persists, please inform the developers.")
+                    print(job['error'])
                     return job['error']
 
 def fetch_video(job_id):
@@ -97,7 +94,6 @@ button1 = st.button("Wav2Lip")
 if st.session_state.get('button') != True:
 
     st.session_state['button'] = button1
-
 if st.session_state['button'] == True:
     if video_in:
         with NamedTemporaryFile(dir='.', suffix='.mp4', delete=False) as f:
